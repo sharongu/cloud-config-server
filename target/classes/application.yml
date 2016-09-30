@@ -1,0 +1,43 @@
+#eureka.client.serviceUrl.defaultZone=http\://localhost\:8761/eureka/,http\://zlhost\:8762/eureka/
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/sharongu/config_repo
+          # configserver将配置库clone到本地的缓存目录
+          basedir: d:/data/temp
+          #username: user
+          #password: pass
+          # 除了根目录，configserver还会在这些子目录中搜索配置文件
+          #searchPaths: 
+  application:
+    name: cloud-config-server
+
+server:
+  port: 8888
+
+management:
+  context-path: /admin
+
+logging:
+  level:
+    com.netflix.discovery: 'OFF'
+    org.springframework.cloud: 'DEBUG'
+
+#configserver同时也作为一个eureka instance注册到eureka server，可以被其它服务所调用，注册时用的serviceId，virtual host和non-secure port默认
+#取的 ${spring.application.name}, ${spring.application.name} 和 ${server.port}
+eureka:
+  instance:
+    # 每隔多少秒（默认30秒）向eureka server发送心跳数据，当leaseExpirationDurationInSeconds（默认90秒）没有发送心跳给服务器时，eureka server会将其删除
+    leaseRenewalIntervalInSeconds: 10
+    statusPageUrlPath: ${management.context-path}/info
+    healthCheckUrlPath: ${management.context-path}/health
+
+  client:
+    healthcheck:
+      #是否定期向eureka server发送健康信息，默认是不发送，一旦注册完成，eureka server始终认为client为UP状态
+      enabled: true
+    serviceUrl:
+      # eureka server的注册地址
+      defaultZone: http://peer1:8761/eureka/
