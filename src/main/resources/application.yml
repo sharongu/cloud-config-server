@@ -1,4 +1,3 @@
-#eureka.client.serviceUrl.defaultZone=http\://localhost\:8761/eureka/,http\://zlhost\:8762/eureka/
 spring:
   cloud:
     config:
@@ -12,13 +11,16 @@ spring:
           # 除了根目录，configserver还会在这些子目录中搜索配置文件
           #searchPaths: 
   application:
-    name: cloud-config-server
+    name: @project.name@
+
+info.version: @project.version@
 
 server:
   port: 8888
 
-management:
-  context-path: /admin
+# 改了context-path后，通过spring boot admin查看env等信息时会报404，应该是eureka.instance里面有些属性没有设置导致的，因此建议不要改
+# management:
+  # context-path: /admin
 
 logging:
   level:
@@ -31,8 +33,8 @@ eureka:
   instance:
     # 每隔多少秒（默认30秒）向eureka server发送心跳数据，当leaseExpirationDurationInSeconds（默认90秒）没有发送心跳给服务器时，eureka server会将其删除
     leaseRenewalIntervalInSeconds: 10
-    statusPageUrlPath: ${management.context-path}/info
-    healthCheckUrlPath: ${management.context-path}/health
+    # statusPageUrlPath: ${management.context-path}/info
+    # healthCheckUrlPath: ${management.context-path}/health
 
   client:
     healthcheck:
